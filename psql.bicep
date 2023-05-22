@@ -12,10 +12,10 @@ param availabilityZone string
 param backupRetentionDays int
 
 @description('Database administrator login name')
-param dbADGroupName string
+param adGroupName string
 
 @description('Database administrator login name')
-param dbADGroupObjectId string
+param adGroupObjectId string
 
 @description('Indicating whether Geo-Redundant backup is enabled on the server')
 param enableGeo bool
@@ -71,7 +71,7 @@ param tags object
 @description('Tenant id of the server')
 param tenantId string
 
-@description('Database administrator login name')
+@description('Delegated User assigned identity resource id')
 param userAssignedIdentityId string
 
 resource psql 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
@@ -115,10 +115,10 @@ resource psql 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
     }
     version: psqlVersion
     }
-    resource iam 'administrators' = {
-      name:  dbADGroupObjectId
+    resource adAdmin 'administrators' = {
+      name:  adGroupObjectId
       properties: {
-        principalName: dbADGroupName
+        principalName: adGroupName
         principalType: 'Group'
         tenantId: tenantId
       }
