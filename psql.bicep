@@ -1,3 +1,9 @@
+@description('Enabled for Azure AD authentication support, Azure AD Administrators Name (Azure member or group name)')
+param adminAdGroupName string
+
+@description('Azure AD Administrators resource id')
+param adminAdGroupObjectId string
+
 @description('Server administrator login name')
 param adminLogin string
 
@@ -10,12 +16,6 @@ param availabilityZone string
 
 @description('Backup retention days for the server')
 param backupRetentionDays int
-
-@description('Database administrator login name')
-param adGroupName string
-
-@description('Database administrator login name')
-param adGroupObjectId string
 
 @description('Indicating whether Geo-Redundant backup is enabled on the server')
 param enableGeo bool
