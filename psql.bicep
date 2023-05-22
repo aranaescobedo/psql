@@ -1,20 +1,77 @@
+@description('Server administrator login name')
+param adminLogin string
+
+@description('Server administrator login name')
 @secure()
 param adminPassword string
+
+@description('Availability zone information of the server.')
 param availabilityZone string
+
+@description('Backup retention days for the server')
 param backupRetentionDays int
+
+@description('Database administrator login name')
 param dbADGroupName string
+
+@description('Database administrator login name')
 param dbADGroupObjectId string
+
+@description('Indicating whether Geo-Redundant backup is enabled on the server')
 param enableGeo bool
+
+@description('URI for the key for data encryption for server')
 param keyVaultKeyURI string
+
+@description('Data encryption type to depict if it is System Managed vs Azure Key vault')
+@allowed([
+  'AzureKeyVault'
+  'SystemManaged'
+])
+param keyVaultType string
+
+@description('The geo-location where the server lives')
 param location string
+
+@description('PostgreSQL Server name')
 param psqlName string
+
+@description('PostgreSQL Server version')
+@allowed([
+  '11'
+  '12'
+  '13'
+  '14'
+])
+param psqlVersion string
+
+@description('Private dns zone resource id')
 param privateDnsZoneSourceId string
+
+@description('Name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3')
 param skuName string
+
+@description('Tier of the particular SKU, e.g. Burstable.')
+@allowed([
+  'Burstable'
+  'GeneralPurpose'
+  MemoryOptimized'
+])
 param skuTier string
+
+@description('Max storage allowed for a server')
 param storageSizeGB int
+
+@description('Delegated subnet arm resource id')
 param subnetSourceId string
+
+@description('Server tags')
 param tags object
+
+@description('Tenant id of the server')
 param tenantId string
+
+@description('Database administrator login name')
 param userAssignedIdentityId string
 
 resource psql 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
@@ -32,7 +89,7 @@ resource psql 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   }
   tags: tags
   properties: {
-    administratorLogin: 'pgadmin'
+    administratorLogin: adminLogin
     administratorLoginPassword: adminPassword
     availabilityZone: availabilityZone
     authConfig: {
@@ -41,7 +98,7 @@ resource psql 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
       tenantId: tenantId
     }
     dataEncryption: {
-      type: 'AzureKeyVault'
+      type: keyVaultType
       primaryKeyURI: keyVaultKeyURI
       primaryUserAssignedIdentityId: userAssignedIdentityId
     }
@@ -56,7 +113,7 @@ resource psql 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
     storage: {
       storageSizeGB: storageSizeGB
     }
-    version: '14'
+    version: psqlVersion
     }
     resource iam 'administrators' = {
       name:  dbADGroupObjectId
@@ -67,4 +124,3 @@ resource psql 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
       }
     }
   }
-
