@@ -1,8 +1,16 @@
-@description('Enabled for Azure AD authentication support, Azure AD Administrators Name (Azure member or group name)')
+@description('Enabled for Azure AD authentication support, Azure AD Administrators Name')
 param adminAdGroupName string
 
 @description('Azure AD Administrators resource id')
 param adminAdGroupObjectId string
+
+@description('Azure AD type')
+@allowed([
+  'Group'
+  'ServicePrincipal'
+  'User'
+])
+param adminAdType string
 
 @description('Server administrator login name')
 param adminLogin string
@@ -116,10 +124,10 @@ resource psql 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
     version: psqlVersion
     }
     resource adAdmin 'administrators' = {
-      name:  adGroupObjectId
+      name:  adminAdGroupObjectId
       properties: {
-        principalName: adGroupName
-        principalType: 'Group'
+        principalName: adminAdGroupName
+        principalType: adminAdType
         tenantId: tenantId
       }
     }
