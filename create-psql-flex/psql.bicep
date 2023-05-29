@@ -32,10 +32,6 @@ param enableGeo bool
 param keyVaultKeyURI string
 
 @description('Data encryption type to depict if it is System Managed vs Azure Key vault')
-@allowed([
-  'AzureKeyVault'
-  'SystemManaged'
-])
 param keyVaultType string
 
 @description('The geo-location where the server lives')
@@ -45,12 +41,6 @@ param location string
 param psqlName string
 
 @description('PostgreSQL Server version')
-@allowed([
-  '11'
-  '12'
-  '13'
-  '14'
-])
 param psqlVersion string
 
 @description('Private dns zone resource id')
@@ -63,7 +53,7 @@ param skuName string
 @allowed([
   'Burstable'
   'GeneralPurpose'
-  MemoryOptimized'
+  'MemoryOptimized'
 ])
 param skuTier string
 
