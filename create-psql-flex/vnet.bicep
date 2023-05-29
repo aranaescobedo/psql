@@ -5,10 +5,10 @@ param location string
 param tags object
 
 @description('A list of address blocks reserved for this virtual network in CIDR notation')
-param vnetAddressPrefix
+param vnetAddressPrefix string
 
 @description('Virtual network name')
-param vnetName
+param vnetName string
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: vnetName
@@ -24,4 +24,4 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
 }
 
 // Output variables 
-output vnetId string = vnet.id
+output name string = vnet.name
