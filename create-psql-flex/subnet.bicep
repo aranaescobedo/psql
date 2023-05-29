@@ -40,4 +40,5 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
   }
 }
 
+// Output variables 
 output id string = vnet::subnet.id
