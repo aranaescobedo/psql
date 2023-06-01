@@ -1,4 +1,4 @@
-@description('Reference to the RouteTable resource id')
+@description('Reference to the RouteTable resource ID')
 param rtName string
 
 @description('Address prefix for the subnet')
@@ -7,7 +7,7 @@ param snetAddressPrefix string
 @description('Subnet name')
 param snetName string
 
-@description('VNET name')
+@description('Virtual network name')
 param vnetName string
 
 resource rt 'Microsoft.Network/routeTables@2022-07-01' existing = {
