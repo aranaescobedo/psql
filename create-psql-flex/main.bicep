@@ -28,7 +28,7 @@ param dbResourceGroupName string
 param dateTime string = utcNow()
 
 @allowed([
-  'test'
+  'alpha'
   'prod'
 ])
 @description('Target environment for your deployment')
@@ -83,9 +83,6 @@ param snetName string
 @description('The User assigned identity Name that have permission to the CMK in the Key Vault')
 param userAssignedIdentityName string
 
-@description('A list of address blocks reserved for this virtual network in CIDR notation')
-param vnetAddressPrefix string
-
 @description('Virtual network name')
 param vnetName string
 
@@ -137,18 +134,6 @@ module userManagedIdentity 'modules/id.bicep' = {
   }
 }
 
-//Create virtual network (VNET)
-module virtualNetwork 'modules/vnet.bicep' = {
-  scope: resourceGroup(networkresourceGroupName)
-  name: '${vnetName}-${substring(uniqueString(dateTime),0,4)}'
-  params: {
-    location: location
-    tags: tags
-    vnetAddressPrefix: vnetAddressPrefix
-    vnetName: vnetName
-  }
-}
-
 //Create Subnet with route table
 module subnet 'modules/subnet.bicep' = {
   scope: resourceGroup(networkresourceGroupName)
@@ -157,7 +142,7 @@ module subnet 'modules/subnet.bicep' = {
     rtName: rtName
     snetAddressPrefix: snetAddressPrefix
     snetName: snetName
-    vnetName: virtualNetwork.outputs.name
+    vnetName: vnetName
   }
 }
 
