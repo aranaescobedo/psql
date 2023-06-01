@@ -1,7 +1,7 @@
 @description('User assigned managed identity name')
 param idName string
 
-@description('The geo-location where the server lives')
+@description('The geo-location where the assigned managed identity resides')
 param location string
 
 resource id 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
