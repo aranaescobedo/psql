@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-@description('Enabled for Azure AD authentication support, Azure AD Administrators Name')
+@description('Enabled for Azure AD authentication support, Azure AD Administrator`s Name')
 param adminAdGroupName string
 
 @description('Azure AD Administrators resource id')
@@ -21,6 +21,7 @@ param adminLogin string
 @secure()
 param adminPassword string
 
+@description('Resource group name where the user identity and psql resources will be stored')
 param dbResourceGroupName string
 
 @description('Used to get a random guid in the end of the deployment names')
@@ -39,8 +40,10 @@ param keyName string
 @description('Key Vault name where the CMK is located')
 param kvName string
 
+@description('Resource group name where the key vault is located')
 param kvResourceGroupName string
 
+@description('Subscription ID where the key vault is located')
 param kvSubscriptionId string
 
 @description('Data encryption type to depict if it is System Managed vs Azure Key vault')
@@ -53,7 +56,8 @@ param keyVaultType string
 @description('The geo-location where the server lives')
 param location string
 
-param networkResursGroupName string
+@description('Resource group name where the network resources will be stored')
+param networkresourceGroupName string
 
 @description('PostgreSQL Server name')
 param psqlName string
@@ -119,7 +123,7 @@ resource kv 'Microsoft.KeyVault/vaults@2022-11-01' existing = {
 
 //Get private DNS zone source id
 resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
-  scope: resourceGroup(networkResursGroupName)
+  scope: resourceGroup(networkresourceGroupName)
   name: 'privatelink.postgres.database.azure.com'
 }
 
@@ -135,7 +139,7 @@ module userManagedIdentity 'modules/id.bicep' = {
 
 //Create virtual network (VNET)
 module virtualNetwork 'modules/vnet.bicep' = {
-  scope: resourceGroup(networkResursGroupName)
+  scope: resourceGroup(networkresourceGroupName)
   name: '${vnetName}-${substring(uniqueString(dateTime),0,4)}'
   params: {
     location: location
@@ -147,7 +151,7 @@ module virtualNetwork 'modules/vnet.bicep' = {
 
 //Create Subnet with route table
 module subnet 'modules/subnet.bicep' = {
-  scope: resourceGroup(networkResursGroupName)
+  scope: resourceGroup(networkresourceGroupName)
   name: '${snetName}-${substring(uniqueString(dateTime),0,4)}'
   params: {
     rtName: rtName
