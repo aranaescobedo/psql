@@ -21,6 +21,8 @@ param adminLogin string
 @secure()
 param adminPassword string
 
+param dbResourceGroupName string
+
 @description('Used to get a random guid in the end of the deployment names')
 param dateTime string = utcNow()
 
@@ -35,7 +37,11 @@ param env string
 param keyName string
 
 @description('Key Vault name where the CMK is located')
-param keyVaultName string
+param kvName string
+
+param kvResourceGroupName string
+
+param kvSubscriptionId string
 
 @description('Data encryption type to depict if it is System Managed vs Azure Key vault')
 @allowed([
@@ -46,6 +52,8 @@ param keyVaultType string
 
 @description('The geo-location where the server lives')
 param location string
+
+param networkResursGroupName string
 
 @description('PostgreSQL Server name')
 param psqlName string
@@ -67,7 +75,6 @@ param snetAddressPrefix string
 
 @description('Subnet name')
 param snetName string
-
 
 @description('The User assigned identity Name that have permission to the CMK in the Key Vault')
 param userAssignedIdentityName string
@@ -103,32 +110,32 @@ var tags = {
 }
 
 resource kv 'Microsoft.KeyVault/vaults@2022-11-01' existing = {
-  name: keyVaultName
-  scope: resourceGroup('')
+  name: kvName
+  scope: resourceGroup(kvSubscriptionId, kvResourceGroupName)
   resource key 'keys@2022-11-01' existing = {
     name: keyName
   }
 }
 
 //Get private DNS zone source id
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = { //YOU ARE HERE!
-  scope: resourceGroup('')
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+  scope: resourceGroup(networkResursGroupName)
   name: 'privatelink.postgres.database.azure.com'
 }
 
 //Create user assigned Identity
 module userManagedIdentity 'modules/id.bicep' = {
-  scope: resourceGroup('')
+  scope: resourceGroup(dbResourceGroupName)
   name: '${userAssignedIdentityName}-${substring(uniqueString(dateTime),0,4)}'
   params: {
-    idName:userAssignedIdentityName
+    idName: userAssignedIdentityName
     location: location
   }
 }
 
 //Create virtual network (VNET)
 module virtualNetwork 'modules/vnet.bicep' = {
-  scope: resourceGroup('')
+  scope: resourceGroup(networkResursGroupName)
   name: '${vnetName}-${substring(uniqueString(dateTime),0,4)}'
   params: {
     location: location
@@ -140,7 +147,7 @@ module virtualNetwork 'modules/vnet.bicep' = {
 
 //Create Subnet with route table
 module subnet 'modules/subnet.bicep' = {
-  scope: resourceGroup('')
+  scope: resourceGroup(networkResursGroupName)
   name: '${snetName}-${substring(uniqueString(dateTime),0,4)}'
   params: {
     rtName: rtName
@@ -152,7 +159,7 @@ module subnet 'modules/subnet.bicep' = {
 
 //Create Azure Database for PostgreSQL flexible server
 module psql 'modules/psql.bicep' = {
-  scope: resourceGroup('')
+  scope: resourceGroup(dbResourceGroupName)
   name: '${psqlName}-${substring(uniqueString(dateTime),0,4)}'
   params: {
     adminAdGroupName: adminAdGroupName
