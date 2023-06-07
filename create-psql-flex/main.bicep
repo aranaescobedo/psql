@@ -54,7 +54,7 @@ param kvSubscriptionId string
 param keyVaultType string
 
 @description('The geo-location where the server lives')
-param location string
+param location string = deployment().location
 
 @description('Resource group name where the network resources will be stored')
 param networkresourceGroupName string
