@@ -27,9 +27,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
       addressPrefix: snetAddressPrefix
       delegations: [
         {
-          name: 'Microsoft.DBforMySQL.flexibleServers'
+          name: 'Microsoft.DBforPostgreSQL.flexibleServers'
           properties: {
-            serviceName: 'Microsoft.DBforMySQL/flexibleServers'
+            serviceName: 'Microsoft.DBforPostgreSQL/flexibleServers'
           }
         }
       ]
