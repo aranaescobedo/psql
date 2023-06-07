@@ -28,7 +28,7 @@ param dbResourceGroupName string
 param dateTime string = utcNow()
 
 @allowed([
-  'alpha'
+  'test'
   'prod'
 ])
 @description('Target environment for your deployment')
