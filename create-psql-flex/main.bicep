@@ -124,14 +124,10 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing 
   name: 'privatelink.postgres.database.azure.com'
 }
 
-//Create user assigned Identity
-module userManagedIdentity 'modules/id.bicep' = {
+//Get user assigned Identity
+resource userManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   scope: resourceGroup(dbResourceGroupName)
-  name: '${userAssignedIdentityName}-${substring(uniqueString(dateTime),0,4)}'
-  params: {
-    idName: userAssignedIdentityName
-    location: location
-  }
+  name: userAssignedIdentityName
 }
 
 //Create Subnet with route table
@@ -171,6 +167,6 @@ module psql 'modules/psql.bicep' = {
     subnetSourceId: subnet.outputs.id
     tags: tags
     tenantId: tenant().tenantId
-    userAssignedIdentityId: userManagedIdentity.outputs.id
+    userAssignedIdentityId: userManagedIdentity.id
   }
 }
