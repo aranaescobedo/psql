@@ -11,7 +11,7 @@
 
 ## File Descriptions
 
-- **[create-psql-flex]**: The bicep creates a VM scale set and subnet for Azure DevOps agents, enabling Azure AD SSH login and providing steps to install the necessary extensions and connect to the VM instances.
+- **[create-psql-flex]**: The bicep folder creates an Azure Database for PostgreSQL with data encryption and enables both PostgreSQL and Azure Active Directory authentication.
 
 ## Usage
 Each file in this folder is designed to perform a specific task with AGW or provide troubleshooting information. Before running a file or using any of the provided information, make sure to replace any placeholders enclosed within ```'<>'``` with your own information and follow the instructions carefully.
